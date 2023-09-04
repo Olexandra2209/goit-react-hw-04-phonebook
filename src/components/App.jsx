@@ -5,19 +5,12 @@ import { ContactForm } from './ContactForm/ContactForm';
 import SearchInput from './SearchInput/SearchInput';
 
 export const App = () => {
-  const [contacts, setContacts] = useState([]);
-  const [filter, setFilter] = useState('');
-
-  useEffect(() => {
+  const [contacts, setContacts] = useState(() => {
     const storedContacts = localStorage.getItem('contacts');
-    if (storedContacts) {
-      setContacts(JSON.parse(storedContacts));
-    }
-  }, []);
+    return storedContacts ? JSON.parse(storedContacts) : [];
+  });
 
-  useEffect(() => {
-    localStorage.setItem('contacts', JSON.stringify(contacts));
-  }, [contacts]);
+  const [filter, setFilter] = useState('');
 
   const addContact = ({ name, number }) => {
     const existingContact = contacts.find(
@@ -51,6 +44,10 @@ export const App = () => {
   const filteredContacts = contacts.filter(contact =>
     contact.name.toLowerCase().includes(filter.toLowerCase())
   );
+
+  useEffect(() => {
+    localStorage.setItem('contacts', JSON.stringify(contacts));
+  }, [contacts]);
 
   return (
     <div style={{ marginLeft: '30px' }}>
